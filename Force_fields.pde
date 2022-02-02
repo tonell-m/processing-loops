@@ -30,7 +30,7 @@ final boolean DRAW_BORDERS = true;
 // ===============
 
 Path[] paths = new Path[NUMBER_OF_PATHS];
-Field field = new CombinedKampyleSuperForumlaField(1, 1, 3, 0, 0);
+Field field = new AstroidPerlinNoiseField();
 
 long seed = 0;
 
