@@ -62,9 +62,6 @@ void draw() {
         // work in that case however.
         t = mouseX * 1.0 / width;
         c = mouseY * 1.0 / height;
-        if (mousePressed) {
-            println(c);
-        }
         draw_();
     } else {
         // If recording is enabled, play each frame by calling the draw_() function and apply motion blur before

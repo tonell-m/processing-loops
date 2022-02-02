@@ -6,8 +6,8 @@
 final int PADDING = 50;
 
 // The maximum and minimum size of a particle.
-final float MAX_POINT_SIZE = 1;
-final float MIN_POINT_SIZE = 1;
+final float MAX_POINT_SIZE = 0.5;
+final float MIN_POINT_SIZE = 1.5;
 
 // Number of particles that will follow one single path.
 final int NUMBER_OF_PARTICLES_PER_PATH = 10;
@@ -30,7 +30,9 @@ final boolean DRAW_BORDERS = true;
 // ===============
 
 Path[] paths = new Path[NUMBER_OF_PATHS];
-Field field = new CircularPerlinNoiseField(50, 0.01, 25, 0, 0);
+Field field = new CombinedKampyleSuperForumlaField(1, 1, 3, 0, 0);
+
+long seed = 0;
 
 
 // ===============
@@ -44,15 +46,19 @@ void updateAllPaths() {
     }
 }
 
-void setup(){
-    size(500, 500);
+long getNewSeed() {
+    // Returns a seed that can be accepted by randomSeed and noiseSeed,
+    // generated based on system time so that it is never the same.
+    return floor(System.nanoTime() / 100000);
+}
 
-    // Call the motion blur and gif recorder's setup function.
-    setup_();
+void setupPaths() {
+    // Regenerate a new seed everytime.
+    seed = getNewSeed();
+    randomSeed(seed);
+    noiseSeed(seed);
 
-    // Configure the recording and debugging options
-    recording = false;
-    debugging = false;
+    println("- - - - Start generating with seed", seed, "- - - -");
 
     // Initialize the paths array.
     for (int i = 0; i < NUMBER_OF_PATHS; i++) {
@@ -65,6 +71,22 @@ void setup(){
         println("Computing step", i + 1, "of", NUMBER_OF_STEPS);
         updateAllPaths();
     }
+
+    println("- - - - Done generating with seed", seed, " - - - -");
+}
+
+void setup(){
+    size(500, 500);
+
+    // Call the motion blur and gif recorder's setup function.
+    setup_();
+
+    // Initialize and compute the paths
+    setupPaths();
+
+    // Configure the recording and debugging options
+    recording = false;
+    debugging = true;
 }
  
 void draw_(){
@@ -81,4 +103,8 @@ void draw_(){
         noFill();
         rect(PADDING, PADDING, width - 2 * PADDING, height - 2 * PADDING);
     }
+}
+
+void mousePressed() {
+    setupPaths();
 }
