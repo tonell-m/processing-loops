@@ -20,10 +20,14 @@ class Path {
     // Random time offset so that particles don't appear at the same time for each path
     private float timeOffset = random(1);
 
+    private Field field;
+
 
     // - Lifecycle
 
-    Path() {
+    Path(Field field) {
+        this.field = field;
+
         // Initialize the positions array with the initial position.
         positions.add(new PVector(x, y));
     }
@@ -34,7 +38,7 @@ class Path {
     // Computes the next position of particles in this path
     void update() {
         // Get the direction vector in the field for the current coordinates
-        PVector direction = field(x, y);
+        PVector direction = field.get(x, y);
 
         // Multiply that direction with the time factor and add it to the current position
         x += DELTA_TIME * direction.x;
@@ -44,11 +48,11 @@ class Path {
         positions.add(new PVector(x, y));
     }
 
-    // Draw this Path in the canvas
-    void show() {
+    // Draw the particles in this path on the canvas for a given time value
+    void show(float time) {
         strokeWeight(size);
 
-        float offsettedTime = (t + timeOffset) % 1.0;
+        float offsettedTime = (time + timeOffset) % 1.0;
         int len = positions.size();
 
         for (int i = 0; i < particlesCount; i++) {
