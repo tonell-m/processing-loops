@@ -285,11 +285,11 @@ class SuperFormulaPerlinNoiseField extends PerlinNoiseField {
 
     SuperFormulaPerlinNoiseField() {
         // Various constant sets that give harmonious results. Uncomment the line you want to use.
-        this(20, 0.08, 5, 1, 1, 6, 1, 7, 8, 0, 0);
+        // this(10, 0.01, 5, 1.2, 1.3, 6, 1, 7, 8, 0, 0);
         // this(20, 0.1, 5, 1.3, 1.2, 6, 1, 5, 3, -10, 10);
         // this(30, 0.05, 5, 1, 1.2, 4, 2, 4, 4, -30, -30);
         // this(30, 0.05, 5, 1, 1.2, 4, 2, 4, 4, 0, 0);
-        // this(30, 0.05, 5, 1, 0.9, 8, 4, 1, 7, 0, 0);
+        this(50, 0.02, 5, 1, 0.9, 8, 4, 1, 7, 0, 0);
     }
 
 

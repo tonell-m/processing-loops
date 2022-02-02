@@ -19,15 +19,18 @@ boolean debugging = false;
 // Number of drawings that are used to produce a single frame.
 // The outputed frame will be an average of them for motion blur. A higher value increases the quality
 // of the motion blur but will take more time to compute.
-int samplesPerFrame   = 5;
+int samplesPerFrame   = 7;
 
 // Number of frames the gif will contain in total.
-int numFrames         = 50;
+int numFrames         = 20;
 
 // controls how spaced in time the samples of each frames are. If shutterAngle is equal to 1.0, the last sample of a frame will
 // be just before the first sample of the next frame. If it is greater than 1.0, the samples of each frame will overlap in time
 // with the samples of the neighboring frames. If it is smaller than 1.0 it will be more separated.
-float shutterAngle    = 0.9;
+float shutterAngle    = 0.8;
+
+// Path to the output directory, relative to the path from where the sketch will be executed.
+String outputDirectory = "output/frames";
 
 
 // =====================================
@@ -100,8 +103,8 @@ void draw() {
         
         if (recording) {
             // Save the current frame inside a png file.
-            saveFrame("fr###.png");
-            println(frameCount, "/", numFrames);
+            saveFrame(outputDirectory + "/frame_###.png");
+            println("Generating", frameCount, "of", numFrames);
         }
         
         // If we're recording and the total number of frames has been reached, terminate the program.

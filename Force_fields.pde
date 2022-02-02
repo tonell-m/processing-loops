@@ -3,17 +3,17 @@
 // ===============
 
 // Number of pixels between the screen edge and the content.
-final int PADDING = 50;
+final int PADDING = 100;
 
 // The maximum and minimum size of a particle.
-final float MAX_POINT_SIZE = 0.5;
-final float MIN_POINT_SIZE = 1.5;
+final float MAX_POINT_SIZE = 2;
+final float MIN_POINT_SIZE = 2;
 
 // Number of particles that will follow one single path.
 final int NUMBER_OF_PARTICLES_PER_PATH = 10;
 
 // Number of paths in total.
-final int NUMBER_OF_PATHS = 3000;
+final int NUMBER_OF_PATHS = 6000;
 
 // Time step
 final float DELTA_TIME = 0.1;
@@ -30,7 +30,7 @@ final boolean DRAW_BORDERS = true;
 // ===============
 
 Path[] paths = new Path[NUMBER_OF_PATHS];
-Field field = new AstroidPerlinNoiseField();
+Field field = new SuperFormulaPerlinNoiseField();
 
 long seed = 0;
 
@@ -76,7 +76,8 @@ void setupPaths() {
 }
 
 void setup(){
-    size(500, 500);
+    size(1000, 1000);
+    smooth();
 
     // Call the motion blur and gif recorder's setup function.
     setup_();
@@ -85,8 +86,8 @@ void setup(){
     setupPaths();
 
     // Configure the recording and debugging options
-    recording = false;
-    debugging = true;
+    recording = true;
+    debugging = false;
 }
  
 void draw_(){
@@ -98,7 +99,7 @@ void draw_(){
     }
 
     if (DRAW_BORDERS) {
-        strokeWeight(1.0);
+        strokeWeight(2.0);
         stroke(255);
         noFill();
         rect(PADDING, PADDING, width - 2 * PADDING, height - 2 * PADDING);
