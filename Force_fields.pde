@@ -2,74 +2,110 @@
 // == Constants ==
 // ===============
 
-// Number of dots that will be instantiated.
-final int n = 3000;
-
 // Number of pixels between the screen edge and the content.
-final int padding = 100;
+final int PADDING = 100;
+
+// The maximum and minimum size of a particle.
+final float MAX_POINT_SIZE = 2;
+final float MIN_POINT_SIZE = 2;
+
+// Number of particles that will follow one single path.
+final int NUMBER_OF_PARTICLES_PER_PATH = 10;
+
+// Number of paths in total.
+final int NUMBER_OF_PATHS = 6000;
+
+// Time step
+final float DELTA_TIME = 0.1;
+
+// Number of steps for each paths
+final int NUMBER_OF_STEPS = 100;
+
+// Enable this to draw a white rect around the borders
+final boolean DRAW_BORDERS = true;
 
 
-// =============
-// == Classes ==
-// =============
+// ===============
+// == Variables ==
+// ===============
 
-class Dot {
+Path[] paths = new Path[NUMBER_OF_PATHS];
+Field field = new SuperFormulaPerlinNoiseField();
 
-    // - Properties
-
-    float x = random(padding, width - padding);     // Initial X position
-    float y = random(padding, height - padding);    // Initial Y position
-    float radius = random(2, 15);                   // Radius of the circle in which the dot will move
-    float size = random(1, 2.5);                    // Size of the dot
-
-    // Initial offset in the dot's rotation. This avoids having all the dots at the same angle at the same time.
-    // Using a noise function here instead of a random value allows for a more pattern-like result.
-    float offset = 9 * noise(0.02 * x, 0.02 * y);
-
-    
-    // - Public functions
-
-    void show() {
-        stroke(255, 200);
-        strokeWeight(size);
-
-        float easedTime = ease(t, 1.1);
-        point(
-            x + radius * cos(TWO_PI * easedTime + offset),
-            y + radius * sin(TWO_PI * easedTime + offset)
-        );
-    }
-}
+long seed = 0;
 
 
 // ===============
 // == Functions ==
 // ===============
 
-// Array of dots to animate.
-Dot[] array = new Dot[n];
+// Updates all paths in the array for a new step
+void updateAllPaths() {
+    for (int i = 0; i < NUMBER_OF_PATHS; i++) {
+        paths[i].update();
+    }
+}
+
+long getNewSeed() {
+    // Returns a seed that can be accepted by randomSeed and noiseSeed,
+    // generated based on system time so that it is never the same.
+    return floor(System.nanoTime() / 100000);
+}
+
+void setupPaths() {
+    // Regenerate a new seed everytime.
+    seed = getNewSeed();
+    randomSeed(seed);
+    noiseSeed(seed);
+
+    println("- - - - Start generating with seed", seed, "- - - -");
+
+    // Initialize the paths array.
+    for (int i = 0; i < NUMBER_OF_PATHS; i++) {
+        paths[i] = new Path(field);
+    }
+
+    // Computation of each steps for each path (will generate the array of positions
+    // contained in each path)
+    for (int i = 0; i < NUMBER_OF_STEPS; i++) {
+        println("Computing step", i + 1, "of", NUMBER_OF_STEPS);
+        updateAllPaths();
+    }
+
+    println("- - - - Done generating with seed", seed, " - - - -");
+}
 
 void setup(){
-    size(500, 800);
+    size(1000, 1000);
+    smooth();
 
     // Call the motion blur and gif recorder's setup function.
     setup_();
 
-    // Configure the recording and debugging options
-    recording = false;
-    debugging = false;
+    // Initialize and compute the paths
+    setupPaths();
 
-    // Initialize the dot array.
-    for (int i = 0; i < n; i++) {
-        array[i] = new Dot();
-    }
+    // Configure the recording and debugging options
+    recording = true;
+    debugging = false;
 }
  
 void draw_(){
     background(0);
  
-    // Draw each dot present in the array.
-    for (int i = 0; i < n; i++) {
-        array[i].show();
-    } 
+    // Draw the particles for each path in the array at the current time
+    for (int i = 0; i < NUMBER_OF_PATHS; i++) {
+        paths[i].show(t);
+    }
+
+    if (DRAW_BORDERS) {
+        strokeWeight(2.0);
+        stroke(255);
+        noFill();
+        rect(PADDING, PADDING, width - 2 * PADDING, height - 2 * PADDING);
+    }
+}
+
+void mousePressed() {
+    setupPaths();
 }
